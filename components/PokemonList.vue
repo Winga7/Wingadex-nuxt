@@ -1,6 +1,8 @@
 <script setup>
 // Nuxt auto-imports ref, onMounted, computed, etc.
 import PokemonDetails from "./PokemonDetails.vue";
+import pokedexRegionauxData from "../data/pokedex-regionaux.json";
+import pokedexRegionalIds from "../data/pokedex-regional-ids.json";
 
 // État de l'application
 const pokemons = ref([]);
@@ -13,13 +15,28 @@ const showScrollTop = ref(false);
 const searchQuery = ref("");
 const selectedTypes = ref([]);
 const selectedGenerations = ref([]);
+const selectedPokedex = ref("national"); // Pokédex sélectionné (par défaut: national)
 const showTypeFilters = ref(true);
 const showGenerationFilters = ref(true);
+const showPokedexFilters = ref(true);
 
 // Liste des types disponibles (sera rempli dynamiquement)
 const availableTypes = ref([]);
 // Liste des générations disponibles
 const availableGenerations = ref([]);
+// Liste des Pokédex régionaux
+const availablePokedex = ref(pokedexRegionauxData.regions);
+
+// Obtenir le numéro régional d'un Pokémon
+const getRegionalId = (nationalId, pokedexId) => {
+  if (pokedexId === "national") return nationalId;
+  
+  const pokemonData = pokedexRegionalIds[nationalId];
+  if (!pokemonData) return nationalId; // Fallback si pas de données
+  
+  const regionalId = pokemonData[pokedexId];
+  return regionalId !== null && regionalId !== undefined ? regionalId : nationalId;
+};
 
 // Charger tous les Pokémon au démarrage
 const loadPokemons = async () => {
@@ -81,12 +98,29 @@ const loadPokemons = async () => {
 const filteredPokemons = computed(() => {
   let filtered = pokemons.value;
 
-  // Filtre par recherche (ID, nom FR, EN, JP)
+  // Filtre par Pokédex régional
+  if (selectedPokedex.value !== "national") {
+    const pokedex = availablePokedex.value.find(p => p.id === selectedPokedex.value);
+    if (pokedex && pokedex.ranges) {
+      filtered = filtered.filter((pokemon) => {
+        const id = pokemon.pokedex_id;
+        // Vérifier si l'ID est dans une des plages
+        return pokedex.ranges.some(([min, max]) => id >= min && id <= max);
+      });
+    }
+  }
+
+  // Filtre par recherche (ID national, ID régional, nom FR, EN, JP)
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase().trim();
     filtered = filtered.filter((pokemon) => {
-      // Recherche par ID
+      // Recherche par ID national
       if (pokemon.pokedex_id?.toString() === query) {
+        return true;
+      }
+      // Recherche par ID régional
+      const regionalId = getRegionalId(pokemon.pokedex_id, selectedPokedex.value);
+      if (regionalId?.toString() === query) {
         return true;
       }
       // Recherche par nom FR, EN, JP
@@ -137,11 +171,21 @@ const toggleGeneration = (gen) => {
   }
 };
 
+// Sélectionner un Pokédex régional
+const selectPokedex = (pokedexId) => {
+  selectedPokedex.value = pokedexId;
+  // Réinitialiser les autres filtres si on change de Pokédex
+  if (pokedexId !== "national") {
+    selectedGenerations.value = [];
+  }
+};
+
 // Réinitialiser tous les filtres
 const resetFilters = () => {
   searchQuery.value = "";
   selectedTypes.value = [];
   selectedGenerations.value = [];
+  selectedPokedex.value = "national";
 };
 
 // Ouvrir le modal avec un Pokémon
@@ -246,13 +290,60 @@ onUnmounted(() => {
             v-if="
               searchQuery ||
               selectedTypes.length > 0 ||
-              selectedGenerations.length > 0
+              selectedGenerations.length > 0 ||
+              selectedPokedex !== 'national'
             "
             @click="resetFilters"
             class="px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg transition text-sm font-semibold"
           >
             ✕ Réinitialiser
           </button>
+        </div>
+
+        <!-- Filtre par Pokédex régional -->
+        <div class="mb-4 bg-gray-800 rounded-lg p-3">
+          <button
+            @click="showPokedexFilters = !showPokedexFilters"
+            class="w-full flex items-center justify-between text-sm font-bold hover:text-blue-400 transition"
+          >
+            <span>Filtrer par Pokédex régional</span>
+            <span
+              class="text-sm transition-transform duration-300"
+              :class="showPokedexFilters ? 'rotate-180' : ''"
+            >
+              ▼
+            </span>
+          </button>
+
+          <Transition name="slide">
+            <div v-show="showPokedexFilters" class="mt-3">
+              <div class="flex flex-wrap gap-2">
+                <button
+                  v-for="pokedex in availablePokedex"
+                  :key="pokedex.id"
+                  @click="selectPokedex(pokedex.id)"
+                  :class="
+                    selectedPokedex === pokedex.id
+                      ? 'ring-2 ring-blue-400 bg-blue-700'
+                      : 'bg-gray-700 hover:bg-gray-600'
+                  "
+                  class="flex items-center gap-2 px-3 py-2 rounded-md transition-all text-sm font-medium"
+                  :title="pokedex.description"
+                >
+                  <span class="text-lg">{{ pokedex.icon }}</span>
+                  <span>{{ pokedex.nom }}</span>
+                  <span
+                    v-if="selectedPokedex === pokedex.id"
+                    class="text-blue-300 text-xs ml-1"
+                    >✓</span
+                  >
+                </button>
+              </div>
+              <p class="text-xs text-gray-400 mt-2 italic">
+                Sélectionnez un Pokédex pour voir uniquement les Pokémon disponibles dans ce jeu/région
+              </p>
+            </div>
+          </Transition>
         </div>
 
         <!-- Barre de recherche -->
@@ -418,9 +509,19 @@ onUnmounted(() => {
             />
           </div>
 
-          <!-- Numéro -->
+          <!-- Numéro (régional ou national) -->
           <p class="text-xs text-gray-400 text-center mb-1">
-            N° {{ pokemon.pokedex_id }}
+            <template v-if="selectedPokedex !== 'national'">
+              <span class="font-semibold text-blue-400">
+                N° {{ getRegionalId(pokemon.pokedex_id, selectedPokedex) }}
+              </span>
+              <span class="text-gray-500 text-[10px] ml-1">
+                (Nat. {{ pokemon.pokedex_id }})
+              </span>
+            </template>
+            <template v-else>
+              N° {{ pokemon.pokedex_id }}
+            </template>
           </p>
 
           <!-- Nom -->
@@ -471,6 +572,7 @@ onUnmounted(() => {
             <PokemonDetails
               v-if="selectedPokemonId"
               :pokemon-id="selectedPokemonId"
+              :selected-pokedex="selectedPokedex"
               @change-pokemon="changePokemon"
             />
           </div>

@@ -6,7 +6,11 @@
         "regular": "/images/megas/dardargnan-mega.webp",
         "shiny": "/images/megas/dardargnan-mega-shiny.webp"
       },
-      "type": "Insecte, Poison"
+      "type": 
+      [
+        {"name": "Insecte", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/insecte.png" },
+        {"name": "Poison", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/poison.png" }
+      ]
     }
   ],
   "26": [
@@ -16,7 +20,9 @@
         "regular": "/images/megas/raichu-mega-x.webp",
         "shiny": null
       },
-      "type": "Electrik"
+      "type": [
+        {"name": "Electrik", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/electrik.png" }
+      ]
     },
     {
       "orbe": "Raichuïte Y",
@@ -24,7 +30,9 @@
         "regular": "/images/megas/raichu-mega-y.webp",
         "shiny": null
       },
-      "type": "Electrik"
+      "type": [
+        {"name": "Electrik", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/electrik.png" }
+      ]
     }
   ],
   "36": [
@@ -34,7 +42,10 @@
         "regular": "/images/megas/melodelfe-mega.webp",
         "shiny": null
       },
-      "type": "Fée, Vol"
+      "type": [
+        {"name": "Fée", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/fee.png" },
+        {"name": "Vol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/vol.png" }
+      ]
     }
   ],
   "71": [
@@ -44,7 +55,10 @@
         "regular": "/images/megas/empiflor-mega.webp",
         "shiny": null
       },
-      "type": "Plante, Poison"
+      "type": [
+        {"name": "Plante", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/plante.png" },
+        {"name": "Poison", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/poison.png" }
+      ]
     }
   ],
   "121": [
@@ -54,7 +68,10 @@
         "regular": "/images/megas/staross-mega.webp",
         "shiny": null
       },
-      "type": "Eau, Psy"
+      "type": [
+        {"name": "Eau", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/eau.png" },
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "149": [
@@ -64,7 +81,10 @@
         "regular": "/images/megas/dracolosse-mega.webp",
         "shiny": null
       },
-      "type": "Dragon, Combat"
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
     }
   ],
   "150": [
@@ -74,7 +94,10 @@
         "regular": "/images/megas/mewtwo-mega-x.webp",
         "shiny": "/images/megas/mewtwo-mega-x-shiny.webp"
       },
-      "type": "Psy, Combat"
+      "type": [
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" },
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
     },
     {
       "orbe": "Mewtwoïte Y",
@@ -82,7 +105,9 @@
         "regular": "/images/megas/mewtwo-mega-y.webp",
         "shiny": "/images/megas/mewtwo-mega-y-shiny.webp"
       },
-      "type": "Psy"
+      "type": [
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "154": [
@@ -92,7 +117,10 @@
         "regular": "/images/megas/meganium-mega.webp",
         "shiny": null
       },
-      "type": "Plante, Fée"
+      "type": [
+        {"name": "Plante", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/plante.png" },
+        {"name": "Fée", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/fee.png" }
+      ]
     }
   ],
   "160": [
@@ -102,7 +130,10 @@
         "regular": "/images/megas/aligatueur-mega.webp",
         "shiny": null
       },
-      "type": "Eau, Dragon"
+      "type": [
+        {"name": "Eau", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/eau.png" },
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" }
+      ]
     }
   ],
   "208":[
@@ -112,7 +143,10 @@
         "regular": "/images/megas/steelix-mega.webp",
         "shiny": "/images/megas/steelix-mega-shiny.webp"
       },
-      "type": "Acier, Sol"
+      "type": [
+        {"name": "Acier", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/acier.png" },
+        {"name": "Sol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/sol.png" }
+      ]
     }
   ],
   "227":[
@@ -122,7 +156,10 @@
         "regular": "/images/megas/airmure-mega.webp",
         "shiny": null
       },
-      "type": "Acier, Vol"
+      "type": [
+        {"name": "Acier", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/acier.png" },
+        {"name": "Vol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/vol.png" }
+      ]
     }
   ],
   "358":[
@@ -132,7 +169,10 @@
         "regular": "/images/megas/eoko-mega.webp",
         "shiny": null
       },
-      "type": "Acier, Psy"
+      "type": [
+        {"name": "Acier", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/acier.png" },
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "380": [
@@ -142,7 +182,10 @@
         "regular": "/images/megas/latias-mega.webp",
         "shiny": "/images/megas/latias-mega-shiny.webp"
       },
-      "type": "Dragon, Psy"
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "381": [
@@ -152,7 +195,10 @@
         "regular": "/images/megas/latios-mega.webp",
         "shiny": "/images/megas/latios-mega-shiny.webp"
       },
-      "type": "Dragon, Psy"
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "384": [
@@ -162,7 +208,10 @@
         "regular": "/images/megas/rayquaza-mega.webp",
         "shiny": "/images/megas/rayquaza-mega-shiny.webp"
       },
-      "type": "Dragon, Vol"
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Vol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/vol.png" }
+      ]
     }
   ],
   "445":[
@@ -172,7 +221,10 @@
         "regular": "/images/megas/carchacrok-mega.webp",
         "shiny": "/images/megas/carchacrok-mega-shiny.webp"
       },
-      "type": "Dragon, Sol"
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Sol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/sol.png" }
+      ]
     }
   ],
   "478": [
@@ -182,7 +234,10 @@
         "regular": "/images/megas/momartik-mega.webp",
         "shiny": null
       },
-      "type": "Glace, Spectre"
+      "type": [
+        {"name": "Glace", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/glace.png" },
+        {"name": "Spectre", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/spectre.png" }
+      ]
     }
   ],
   "500":[
@@ -192,7 +247,10 @@
       "regular": "/images/megas/roitiflam-mega.webp",
       "shiny": null
     },
-    "type": "Feu, Combat"
+    "type": [
+      {"name": "Feu", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/feu.png" },
+      {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+    ]
   }
   ],
   "530":[
@@ -202,7 +260,10 @@
       "regular": "/images/megas/minotaupe-mega.webp",
       "shiny": null
     },
-    "type": "Sol, Acier"
+    "type": [
+      {"name": "Sol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/sol.png" },
+      {"name": "Acier", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/acier.png" }
+    ]
   }
   ],
   "531":[
@@ -212,8 +273,62 @@
       "regular": "/images/megas/nanmeoui-mega.webp",
       "shiny": null
     },
-    "type": "Normal, Fée"
+    "type": [
+      {"name": "Normal", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/normal.png" },
+      {"name": "Fée", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/fee.png" }
+    ]
   }
+  ],
+  "545":[
+    {
+      "orbe": "Brutapodite",
+      "sprites": {
+        "regular": "/images/megas/brutapode-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Insecte", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/insecte.png" },
+        {"name": "Poison", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/poison.png" }
+      ]
+    }
+  ],
+  "560":[
+    {
+      "orbe": "Baggaïdite",
+      "sprites": {
+        "regular": "/images/megas/baggaide-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Ténèbres", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/tenebres.png" },
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
+    }
+  ],
+  "604": [
+  {
+    "orbe": "Ohmassacrite",
+    "sprites": {
+      "regular": "/images/megas/ohmassacre-mega.webp",
+      "shiny": null
+    },
+    "type": [
+      {"name": "Électrik", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/electrik.png" }
+    ]
+  }
+  ],
+  "609":[
+    {
+      "orbe": "Lugulabrite",
+      "sprites": {
+        "regular": "/images/megas/lugulabre-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Spectre", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/spectre.png" },
+        {"name": "Feu", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/feu.png" }
+      ]
+    }
   ],
   "652": [
     {
@@ -222,7 +337,10 @@
         "regular": "/images/megas/blindepique-mega.webp",
         "shiny": null
       },
-      "type": "Plante, Combat"
+      "type": [
+        {"name": "Plante", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/plante.png" },
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
     }
   ],
   "655": [
@@ -231,46 +349,114 @@
       "sprites": {
         "regular": "/images/megas/goupelin-mega.webp",
         "shiny": null
-      }
+      },
+      "type": [
+        {"name": "Feu", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/feu.png" },
+        {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+      ]
     }
   ],
   "658": [
     {
-      "orbe": "Amphinobite Z",
+      "orbe": "Amphinolite",
       "sprites": {
         "regular": "/images/megas/amphinobi-mega.webp",
         "shiny": "/images/megas/amphinobi-mega-shiny.webp"
-      }
+      },
+      "type": [
+        {"name": "Eau", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/eau.png" },
+        {"name": "Ténèbres", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/tenebres.png" }
+      ]
     }
+  ],
+  "668":[
+    {
+      "orbe": "Néméliosite",
+      "sprites": {
+        "regular": "/images/megas/nemelios-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Feu", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/feu.png" },
+        {"name": "Normal", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/normal.png" }
+      ]
+    }
+  ],
+  "670":[
+    {
+      "orbe": "Floettite",
+      "sprites": {
+        "regular": "/images/megas/floette-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Fée", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/fee.png" }
+      ]
+    }
+  ],
+  "687":[
+  {
+    "orbe": "Sepiatrocite",
+    "sprites": {
+      "regular": "/images/megas/sepiatroce-mega.webp",
+      "shiny": null
+    },
+    "type": [
+      {"name": "Ténèbres", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/tenebres.png" },
+      {"name": "Psy", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/psy.png" }
+    ]
+  }
+  ],
+  "680":[
+    {
+      "orbe": "Golgopathite",
+      "sprites": {
+        "regular": "/images/megas/golgopathe-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Roche", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/roche.png" },
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
+    }
+  ],
+  "691":[
+    {
+      "orbe": "Kravarekite",
+      "sprites": {
+        "regular": "/images/megas/kravarech-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Poison", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/poison.png" },
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" }
+      ]
+    }
+  ],
+  "701":[
+    {
+      "orbe": "Brutalibrite",
+      "sprites": {
+        "regular": "/images/megas/brutalibre-mega.webp",
+        "shiny": null
+      },
+      "type": [
+      {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" },
+      {"name": "Vol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/vol.png" }
+    ]
+  }
   ],
   "718": [
     {
-      "orbe": "Cœur de Zygarde",
-      "sprites": {
-        "regular": "/images/megas/Zygarde-Cœur.webp",
-        "shiny": null
-      }
-    },
-    {
-      "orbe": "Forme 20% (Chien)",
-      "sprites": {
-        "regular": "/images/megas/zygarde-20.webp",
-        "shiny": "/images/megas/zygarde-20-shiny.webp"
-      }
-    },
-    {
-      "orbe": "Forme 100% (Parfaite)",
-      "sprites": {
-        "regular": "/images/megas/Zygarde-Forme-Parfaite.webp",
-        "shiny": "/images/megas/Zygarde-Forme-Parfaite-shiny.webp"
-      }
-    },
-    {
-      "orbe": "Méga-Zygarde",
+      "orbe": "Zygardite",
       "sprites": {
         "regular": "/images/megas/mega-zygarde.webp",
         "shiny": null
-      }
+      },
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png"},
+        {"name": "Sol", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/sol.png"}
+      ]
     }
   ],
   "719": [
@@ -280,6 +466,56 @@
         "regular": "/images/megas/diancie-mega.webp",
         "shiny": "/images/megas/diancie-mega-shiny.webp"
       }
+    }
+  ],
+  "780":[
+    {
+      "orbe": "Draïeulite",
+      "sprites": {
+        "regular": "/images/megas/draeul-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Normal", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/normal.png" },
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" }
+      ]
+    }
+  ],
+  "807":[
+    {
+      "orbe": "Zeroaraite",
+      "sprites": {
+        "regular": "/images/megas/zeroara-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Electrik", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" }
+      ]
+    }
+  ],
+  "870":[
+    {
+      "orbe": "Hexadronite",
+      "sprites": {
+        "regular": "/images/megas/hexadron-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Combat", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/combat.png" }
+      ]
+    }
+  ],
+  "998": [
+    {
+      "orbe": "Glaivodite",
+      "sprites": {
+        "regular": "/images/megas/glaivodo-mega.webp",
+        "shiny": null
+      },
+      "type": [
+        {"name": "Dragon", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/dragon.png" },
+        {"name": "Glace", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/glace.png" }
+      ]
     }
   ]
 }

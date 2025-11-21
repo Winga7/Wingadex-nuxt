@@ -1,13 +1,53 @@
 <script setup>
 // Nuxt auto-imports ref, watch, etc.
 import megaEvolutionsZA from "../data/mega-evolutions-za.json";
+import pokemonFormesAlt from "../data/pokemon-formes-alt.json";
+import pokedexRegionalIds from "../data/pokedex-regional-ids.json";
+import pokedexRegionauxData from "../data/pokedex-regionaux.json";
 
 const props = defineProps({
   pokemonId: {
     type: Number,
     required: true,
   },
+  selectedPokedex: {
+    type: String,
+    default: "national",
+  },
 });
+
+// Obtenir le numéro régional d'un Pokémon
+const getRegionalId = (nationalId, pokedexId) => {
+  if (pokedexId === "national") return nationalId;
+  
+  const pokemonData = pokedexRegionalIds[nationalId];
+  if (!pokemonData) return nationalId; // Fallback si pas de données
+  
+  const regionalId = pokemonData[pokedexId];
+  return regionalId !== null && regionalId !== undefined ? regionalId : nationalId;
+};
+
+// Obtenir tous les numéros régionaux d'un Pokémon
+const getAllRegionalIds = (nationalId) => {
+  const pokemonData = pokedexRegionalIds[nationalId];
+  if (!pokemonData) return [];
+  
+  const regionalIds = [];
+  
+  // Parcourir toutes les régions
+  pokedexRegionauxData.regions.forEach((region) => {
+    if (region.id !== 'national' && pokemonData[region.id]) {
+      regionalIds.push({
+        regionId: region.id,
+        regionName: region.nom,
+        regionIcon: region.icon,
+        number: pokemonData[region.id]
+      });
+    }
+  });
+  
+  return regionalIds;
+};
 
 const emit = defineEmits(["changePokemon"]);
 
@@ -45,7 +85,25 @@ const loadPokemonDetails = async () => {
 
     const data = await response.json();
 
-    // Injecter les méga-évolutions Z-A manquantes
+    // Injecter les formes alternatives
+    if (pokemonFormesAlt[props.pokemonId]) {
+      console.log("💉 Injection formes alternatives pour ID:", props.pokemonId);
+
+      if (!data.evolution) {
+        data.evolution = {};
+      }
+      if (!data.evolution.formes_alternatives) {
+        data.evolution.formes_alternatives = [];
+      }
+
+      // Ajouter les formes alternatives
+      data.evolution.formes_alternatives = [
+        ...data.evolution.formes_alternatives,
+        ...pokemonFormesAlt[props.pokemonId],
+      ];
+    }
+
+    // Injecter les méga-évolutions Z-A
     if (megaEvolutionsZA[props.pokemonId]) {
       console.log("💉 Injection méga-évolutions Z-A pour ID:", props.pokemonId);
 
@@ -201,6 +259,28 @@ const getSprites = () => {
     });
   }
 
+  // Formes alternatives (comme Zygarde 20%, 100%, Cœur, etc.)
+  if (pokemon.value.evolution?.formes_alternatives) {
+    pokemon.value.evolution.formes_alternatives.forEach((forme) => {
+      if (forme.sprites?.regular) {
+        sprites.push({
+          type: `${forme.nom} 🔷`,
+          url: forme.sprites.regular,
+          category: "Forme Alternative",
+          nom: forme.nom,
+        });
+      }
+      if (forme.sprites?.shiny) {
+        sprites.push({
+          type: `${forme.nom} Shiny ✨🔷`,
+          url: forme.sprites.shiny,
+          category: "Forme Alternative",
+          nom: forme.nom,
+        });
+      }
+    });
+  }
+
   // Gigamax (objet avec regular et shiny)
   if (pokemon.value.sprites.gmax) {
     if (pokemon.value.sprites.gmax.regular) {
@@ -222,30 +302,14 @@ const getSprites = () => {
   // Méga-évolutions (regular et shiny pour chaque méga)
   if (pokemon.value.evolution?.mega) {
     pokemon.value.evolution.mega.forEach((mega) => {
-      // Déterminer le nom à afficher
-      let displayName = mega.orbe;
-      let category = "Méga";
-
-      // Si c'est une forme spéciale (ne contient pas "ïte" ou "ite" à la fin généralement)
-      // Ou si c'est explicitement une forme Zygarde/Cœur
-      if (
-        mega.orbe.includes("Forme") ||
-        mega.orbe.includes("Cœur") ||
-        mega.orbe.includes("Cellule")
-      ) {
-        displayName = mega.orbe; // Garder le nom tel quel
-        category = "Forme Spéciale";
-      } else {
-        // Logique standard pour les Méga-Gemmes (Dracaufite -> Méga Dracaufeu)
-        // On essaie de nettoyer un peu, mais sinon on affiche "Méga + Nom"
-        displayName = `Méga ${mega.orbe.replace(/ite|ïte|osite|usite/g, "")}`;
-      }
+      // Nettoyer le nom de la pierre pour l'affichage
+      const displayName = `Méga ${mega.orbe.replace(/ite|ïte|osite|usite/g, "")}`;
 
       if (mega.sprites?.regular) {
         sprites.push({
           type: `${displayName} ⚡`,
           url: mega.sprites.regular,
-          category: category,
+          category: "Méga",
           orbe: mega.orbe,
         });
       }
@@ -253,7 +317,7 @@ const getSprites = () => {
         sprites.push({
           type: `${displayName} Shiny ✨⚡`,
           url: mega.sprites.shiny,
-          category: category,
+          category: "Méga",
           orbe: mega.orbe,
         });
       }
@@ -264,7 +328,7 @@ const getSprites = () => {
   if (pokemon.value.pokedex_id === 718) {
     // Ordre souhaité : Cœur -> 20% -> Base (50%) -> 100% -> Méga
     const order = [
-      "Cœur",
+      "Cœur de Zygarde",
       "Forme 20%",
       "Normal",
       "Shiny", // Shiny base (50%)
@@ -350,6 +414,12 @@ const hasMultipleEvolutionPaths = () => {
 const getMegaEvolutions = () => {
   if (!pokemon.value?.evolution?.mega) return [];
   return pokemon.value.evolution.mega;
+};
+
+// Obtenir les formes alternatives si disponibles
+const getFormesAlternatives = () => {
+  if (!pokemon.value?.evolution?.formes_alternatives) return [];
+  return pokemon.value.evolution.formes_alternatives;
 };
 
 // Couleur selon multiplicateur de résistance
@@ -458,6 +528,8 @@ const getTypeImage = (typeName) => {
               :class="{
                 'bg-gradient-to-r from-purple-700 to-purple-900':
                   getSprites()[currentSpriteIndex]?.category === 'Méga',
+                'bg-gradient-to-r from-cyan-700 to-cyan-900':
+                  getSprites()[currentSpriteIndex]?.category === 'Forme Alternative',
                 'bg-gradient-to-r from-green-700 to-emerald-900':
                   getSprites()[currentSpriteIndex]?.category ===
                   'Forme Spéciale',
@@ -493,6 +565,8 @@ const getTypeImage = (typeName) => {
                     : 'hover:scale-105 opacity-70 hover:opacity-100',
                   sprite.category === 'Méga'
                     ? 'bg-purple-900/50'
+                    : sprite.category === 'Forme Alternative'
+                    ? 'bg-cyan-900/50'
                     : sprite.category === 'Forme Spéciale'
                     ? 'bg-green-900/50'
                     : sprite.category === 'Régionale'
@@ -529,10 +603,27 @@ const getTypeImage = (typeName) => {
               {{ pokemon.name?.en }} • {{ pokemon.name?.jp }}
             </p>
             <p class="text-lg text-gray-300">
-              <span class="font-semibold">N° {{ pokemon.pokedex_id }}</span> •
+              <span class="font-semibold">N° {{ pokemon.pokedex_id }} (National)</span>
+              •
               Génération {{ pokemon.generation }}
             </p>
             <p class="text-gray-400 italic mt-2">{{ pokemon.category }}</p>
+            
+            <!-- Tous les numéros régionaux -->
+            <div v-if="getAllRegionalIds(pokemon.pokedex_id).length" class="mt-4 bg-gray-800/50 rounded-lg p-4">
+              <h4 class="text-sm font-semibold text-gray-400 mb-3">📚 Numéros dans les Pokédex régionaux</h4>
+              <div class="flex flex-wrap gap-2">
+                <div
+                  v-for="regional in getAllRegionalIds(pokemon.pokedex_id)"
+                  :key="regional.regionId"
+                  class="bg-gray-700 px-3 py-2 rounded-lg flex items-center gap-2"
+                >
+                  <span class="text-lg">{{ regional.regionIcon }}</span>
+                  <span class="font-semibold text-blue-400">N° {{ regional.number }}</span>
+                  <span class="text-gray-400 text-sm">{{ regional.regionName }}</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Types -->
@@ -728,6 +819,7 @@ const getTypeImage = (typeName) => {
           pokemon.evolution &&
           (getPreEvolutions().length ||
             getAllEvolutions().length ||
+            getFormesAlternatives().length ||
             getMegaEvolutions().length)
         "
         class="bg-gray-800 rounded-xl p-6 mb-8"
@@ -742,9 +834,60 @@ const getTypeImage = (typeName) => {
           💡 Ce Pokémon peut évoluer de différentes façons selon les conditions
         </div>
 
-        <!-- Chaîne d'évolution complète -->
+        <!-- CAS SPÉCIAL ÉVOLI : Évolutions en grille -->
+        <div v-if="pokemon.pokedex_id === 133 && getAllEvolutions().length" class="mb-6">
+          <h3 class="text-xl font-semibold text-green-400 mb-4">
+            🌟 Évolutions possibles d'Évoli
+          </h3>
+          
+          <!-- Évoli au centre -->
+          <div class="flex justify-center mb-6">
+            <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-6">
+              <img
+                :src="pokemon.sprites?.regular"
+                :alt="pokemon.name?.fr"
+                class="w-40 h-40 object-contain mx-auto mb-2"
+                @error="(e) => (e.target.style.display = 'none')"
+              />
+              <p class="text-center font-bold text-xl">{{ pokemon.name?.fr }}</p>
+              <p class="text-center text-sm text-gray-400">
+                N° {{ pokemon.pokedex_id }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Grille des évolutions -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            <button
+              v-for="evo in getAllEvolutions()"
+              :key="evo.pokedex_id"
+              @click="goToEvolution(evo.pokedex_id)"
+              class="bg-gray-700 hover:bg-gray-600 rounded-lg p-4 transition transform hover:scale-105 flex flex-col"
+            >
+              <img
+                :src="`https://raw.githubusercontent.com/Yarkis01/TyraDex/images/sprites/${evo.pokedex_id}/regular.png`"
+                :alt="evo.name"
+                class="w-24 h-24 object-contain mx-auto mb-2"
+                @error="(e) => (e.target.style.display = 'none')"
+              />
+              <p class="text-center font-bold mb-1">{{ evo.name }}</p>
+              <p class="text-center text-xs text-gray-400 mb-2">
+                N° {{ evo.pokedex_id }}
+              </p>
+              <p class="text-center text-xs text-yellow-400 bg-yellow-900/30 rounded px-2 py-1">
+                {{ evo.condition }}
+              </p>
+            </button>
+          </div>
+
+          <p class="text-center text-sm text-yellow-400 mt-6 bg-yellow-900/30 rounded-lg p-3 max-w-2xl mx-auto">
+            💡 Toutes ces évolutions partent directement d'Évoli selon différentes conditions
+          </p>
+        </div>
+
+        <!-- Chaîne d'évolution complète (autres Pokémon) -->
         <div
-          v-if="getPreEvolutions().length || getAllEvolutions().length"
+          v-else-if="getPreEvolutions().length || getAllEvolutions().length"
           class="mb-6"
         >
           <h3 class="text-xl font-semibold text-green-400 mb-4">
@@ -831,91 +974,347 @@ const getTypeImage = (typeName) => {
           </div>
         </div>
 
-        <!-- Méga-Évolutions -->
-        <div v-if="getMegaEvolutions().length" class="mt-6">
-          <h3 class="text-xl font-semibold text-purple-400 mb-4">
-            ⭐
-            {{
-              pokemon.pokedex_id === 718 ? "Formes & Méga" : "Méga-Évolutions"
-            }}
+        <!-- CAS SPÉCIAL ZYGARDE : Formes + Méga dans une seule chaîne -->
+        <div v-if="pokemon.pokedex_id === 718 && (getFormesAlternatives().length || getMegaEvolutions().length)" class="mt-6">
+          <h3 class="text-xl font-semibold text-cyan-400 mb-4">
+            🔷 Formes de Zygarde
           </h3>
           <div class="flex items-center gap-4 flex-wrap justify-center">
-            <!-- CAS SPÉCIAL ZYGARDE : Ordre spécifique -->
-            <template v-if="pokemon.pokedex_id === 718">
-              <!-- 1. Les formes "avant" (Cœur, 20%) -->
-              <template
-                v-for="mega in getMegaEvolutions().filter(
-                  (m) => m.orbe.includes('Cœur') || m.orbe.includes('20%')
-                )"
-                :key="mega.orbe"
+            <!-- 1. Cœur -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => f.nom.includes('Cœur')
+              )"
+              :key="forme.nom"
+            >
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
               >
-                <div
-                  class="bg-purple-900 border-4 border-purple-500 rounded-lg p-4"
-                >
-                  <img
-                    :src="mega.sprites?.regular"
-                    :alt="mega.orbe"
-                    class="w-32 h-32 object-contain mx-auto mb-2"
-                    @error="(e) => (e.target.style.display = 'none')"
-                  />
-                  <p class="text-center font-bold text-purple-200">
-                    {{ mega.orbe }}
-                  </p>
-                </div>
-                <div class="text-center flex-shrink-0">
-                  <div class="text-3xl mb-2 text-purple-400">⚡</div>
-                </div>
-              </template>
-
-              <!-- 2. Le Pokémon de base (50%) -->
-              <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-4">
                 <img
-                  :src="pokemon.sprites?.regular"
-                  :alt="pokemon.name?.fr"
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
                   class="w-32 h-32 object-contain mx-auto mb-2"
                   @error="(e) => (e.target.style.display = 'none')"
                 />
-                <p class="text-center font-bold">{{ pokemon.name?.fr }}</p>
-                <p class="text-center text-sm text-gray-400">
-                  N° {{ pokemon.pokedex_id }}
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+            </template>
+
+            <!-- 2. Forme 20% -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => f.nom.includes('20%')
+              )"
+              :key="forme.nom"
+            >
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+            </template>
+
+            <!-- 3. Forme de base (50%) -->
+            <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-4">
+              <img
+                :src="pokemon.sprites?.regular"
+                :alt="pokemon.name?.fr"
+                class="w-32 h-32 object-contain mx-auto mb-2"
+                @error="(e) => (e.target.style.display = 'none')"
+              />
+              <p class="text-center font-bold">{{ pokemon.name?.fr }}</p>
+              <p class="text-center text-sm text-gray-400">
+                N° {{ pokemon.pokedex_id }} (50%)
+              </p>
+            </div>
+
+            <!-- 4. Forme 100% -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => !f.nom.includes('Cœur') && !f.nom.includes('20%')
+              )"
+              :key="forme.nom"
+            >
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+            </template>
+
+            <!-- 5. Méga-Zygarde (part de la forme 100%) -->
+            <template v-for="mega in getMegaEvolutions()" :key="mega.orbe">
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-purple-400">⚡</div>
+                <p class="text-xs text-purple-300 max-w-[100px] break-words font-semibold">
+                  {{ mega.orbe }}
+                </p>
+              </div>
+              <div class="bg-purple-900 border-4 border-purple-500 rounded-lg p-4">
+                <img
+                  :src="mega.sprites?.regular"
+                  :alt="`Méga-${pokemon.name?.fr}`"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-purple-200">
+                  Méga-{{ pokemon.name?.fr }}
+                </p>
+                <p class="text-center text-xs text-purple-300 mt-1">
+                  {{ mega.orbe }}
+                </p>
+              </div>
+            </template>
+          </div>
+          <p class="text-center text-sm text-yellow-400 mt-4 bg-yellow-900/30 rounded-lg p-3">
+            💡 Note : La méga-évolution de Zygarde part de sa forme 100% (Parfaite), pas de sa forme de base
+          </p>
+        </div>
+
+        <!-- CAS SPÉCIAL FLOETTE : Formes + Méga uniquement depuis Fleur Éternelle -->
+        <div v-else-if="pokemon.pokedex_id === 670 && (getFormesAlternatives().length || getMegaEvolutions().length)" class="mt-6">
+          <h3 class="text-xl font-semibold text-cyan-400 mb-4">
+            🌸 Formes de Floette
+          </h3>
+          
+          <!-- Floette de base -->
+          <div class="flex justify-center mb-6">
+            <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-4">
+              <img
+                :src="pokemon.sprites?.regular"
+                :alt="pokemon.name?.fr"
+                class="w-32 h-32 object-contain mx-auto mb-2"
+                @error="(e) => (e.target.style.display = 'none')"
+              />
+              <p class="text-center font-bold">{{ pokemon.name?.fr }}</p>
+              <p class="text-center text-sm text-gray-400">
+                N° {{ pokemon.pokedex_id }}
+              </p>
+            </div>
+          </div>
+
+          <div class="text-center text-sm text-gray-400 mb-4">⬇️</div>
+
+          <!-- Formes de fleurs normales (5 fleurs colorées) -->
+          <div class="mb-6">
+            <h4 class="text-center text-lg font-semibold text-cyan-300 mb-4">Formes de fleurs normales</h4>
+            <div class="grid grid-cols-5 gap-3 max-w-4xl mx-auto">
+              <div
+                v-for="forme in getFormesAlternatives().filter(
+                  (f) => !f.nom.includes('Éternelle')
+                )"
+                :key="forme.nom"
+                class="bg-cyan-900/50 border-2 border-cyan-600 rounded-lg p-3"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-24 h-24 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center text-xs font-semibold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+            </div>
+            <p class="text-center text-xs text-gray-400 mt-2 italic">Ces formes ne peuvent PAS méga-évoluer</p>
+          </div>
+
+          <div class="text-center text-sm text-gray-400 mb-4">⬇️</div>
+
+          <!-- Fleur Éternelle (SEULE à pouvoir méga-évoluer) -->
+          <div class="flex items-center gap-4 justify-center flex-wrap">
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => f.nom.includes('Éternelle')
+              )"
+              :key="forme.nom"
+            >
+              <div
+                class="bg-yellow-900 border-4 border-yellow-500 rounded-lg p-4 shadow-lg shadow-yellow-500/50"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-yellow-200 text-lg">
+                  {{ forme.nom }}
+                </p>
+                <p class="text-center text-xs text-yellow-300 mt-1">
+                  ⭐ Forme spéciale (AZ)
                 </p>
               </div>
 
-              <!-- 3. Les formes "après" (100%, Méga) -->
-              <template
-                v-for="mega in getMegaEvolutions().filter(
-                  (m) => !m.orbe.includes('Cœur') && !m.orbe.includes('20%')
-                )"
-                :key="mega.orbe"
-              >
+              <!-- Flèche vers méga -->
+              <template v-if="getMegaEvolutions().length">
                 <div class="text-center flex-shrink-0">
                   <div class="text-3xl mb-2 text-purple-400">⚡</div>
+                  <p class="text-xs text-purple-300 font-semibold">
+                    Floettite
+                  </p>
                 </div>
+
+                <!-- Méga-Floette -->
                 <div
+                  v-for="mega in getMegaEvolutions()"
+                  :key="mega.orbe"
                   class="bg-purple-900 border-4 border-purple-500 rounded-lg p-4"
                 >
                   <img
                     :src="mega.sprites?.regular"
-                    :alt="mega.orbe"
+                    :alt="`Méga-${pokemon.name?.fr}`"
                     class="w-32 h-32 object-contain mx-auto mb-2"
                     @error="(e) => (e.target.style.display = 'none')"
                   />
                   <p class="text-center font-bold text-purple-200">
-                    {{ mega.orbe }}
+                    Méga-{{ pokemon.name?.fr }}
                   </p>
-                  <!-- Sous-titre pour la pierre (Uniquement pour Méga-Zygarde) -->
-                  <p
-                    v-if="mega.orbe.includes('Méga')"
-                    class="text-center text-xs text-purple-300 mt-1"
-                  >
-                    Zygardite
+                  <p class="text-center text-xs text-purple-300 mt-1">
+                    {{ mega.orbe }}
                   </p>
                 </div>
               </template>
             </template>
+          </div>
 
-            <!-- CAS STANDARD (Autres Pokémon) -->
-            <template v-else>
+          <p class="text-center text-sm text-yellow-400 mt-6 bg-yellow-900/30 rounded-lg p-3 max-w-3xl mx-auto">
+            💡 Note : SEULE la forme "Fleur Éternelle" (le Floette d'AZ) peut méga-évoluer. Les 5 autres formes de fleurs restent sous leur forme normale.
+          </p>
+        </div>
+
+        <!-- Formes Alternatives (autres Pokémon) -->
+        <div v-else-if="getFormesAlternatives().length" class="mt-6">
+          <h3 class="text-xl font-semibold text-cyan-400 mb-4">
+            🔷 Formes Alternatives
+          </h3>
+          <div class="flex items-center gap-4 flex-wrap justify-center">
+            <!-- Formes "avant" le Pokémon de base -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => f.nom.includes('Cœur')
+              )"
+              :key="forme.nom"
+            >
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+            </template>
+
+            <!-- Forme 20% -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => f.nom.includes('20%')
+              )"
+              :key="forme.nom"
+            >
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+            </template>
+
+            <!-- Pokémon de base -->
+            <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-4">
+              <img
+                :src="pokemon.sprites?.regular"
+                :alt="pokemon.name?.fr"
+                class="w-32 h-32 object-contain mx-auto mb-2"
+                @error="(e) => (e.target.style.display = 'none')"
+              />
+              <p class="text-center font-bold">{{ pokemon.name?.fr }}</p>
+              <p class="text-center text-sm text-gray-400">
+                N° {{ pokemon.pokedex_id }}
+              </p>
+            </div>
+
+            <!-- Formes "après" le Pokémon de base -->
+            <template
+              v-for="forme in getFormesAlternatives().filter(
+                (f) => !f.nom.includes('Cœur') && !f.nom.includes('20%')
+              )"
+              :key="forme.nom"
+            >
+              <div class="text-center flex-shrink-0">
+                <div class="text-3xl mb-2 text-cyan-400">🔷</div>
+              </div>
+              <div
+                class="bg-cyan-900 border-4 border-cyan-500 rounded-lg p-4"
+              >
+                <img
+                  :src="forme.sprites?.regular"
+                  :alt="forme.nom"
+                  class="w-32 h-32 object-contain mx-auto mb-2"
+                  @error="(e) => (e.target.style.display = 'none')"
+                />
+                <p class="text-center font-bold text-cyan-200">
+                  {{ forme.nom }}
+                </p>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Méga-Évolutions (autres Pokémon, sauf Zygarde et Floette) -->
+        <div v-if="getMegaEvolutions().length && pokemon.pokedex_id !== 718 && pokemon.pokedex_id !== 670" class="mt-6">
+          <h3 class="text-xl font-semibold text-purple-400 mb-4">
+            ⭐ Méga-Évolutions
+          </h3>
+          <div class="flex items-center gap-4 flex-wrap justify-center">
+            <!-- CAS STANDARD (Tous les Pokémon) -->
               <!-- Pokémon de base -->
               <div class="bg-blue-900 border-4 border-blue-500 rounded-lg p-4">
                 <img
@@ -962,7 +1361,6 @@ const getTypeImage = (typeName) => {
                   </p>
                 </div>
               </template>
-            </template>
           </div>
         </div>
       </div>

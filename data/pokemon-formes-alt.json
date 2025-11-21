@@ -1,0 +1,107 @@
+{
+  "670":[
+  {
+    "nom": "Fleur Rouge",
+    "sprites": {
+      "regular": "/images/formes/floette-rouge.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Fleur Orange",
+    "sprites": {
+      "regular": "/images/formes/floette-orange.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Fleur Jaune",
+    "sprites": {
+      "regular": "/images/formes/floette-jaune.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Fleur Bleue",
+    "sprites": {
+      "regular": "/images/formes/floette-bleue.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Fleur Blanche",
+    "sprites": {
+      "regular": "/images/formes/floette-blanche.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Fleur Éternelle",
+    "sprites": {
+      "regular": "/images/formes/floette-eternelle.webp",
+      "shiny": null
+    }
+  }
+  ],
+  "671":[
+    {
+      "nom": "Fleur Rouge",
+      "sprites": {
+        "regular": "/images/formes/florges-rouge.webp",
+        "shiny": null
+      }
+    },
+    {
+      "nom": "Fleur Orange",
+      "sprites": {
+        "regular": "/images/formes/florges-orange.webp",
+        "shiny": null
+      }
+    },
+    {
+      "nom": "Fleur Jaune",
+      "sprites": {
+        "regular": "/images/formes/florges-jaune.webp",
+        "shiny": null
+      }
+    },
+    {
+      "nom": "Fleur Bleue",
+      "sprites": {
+        "regular": "/images/formes/florges-bleue.webp",
+        "shiny": null
+      }
+    },
+    {
+      "nom": "Fleur Blanche",
+      "sprites": {
+        "regular": "/images/formes/florges-blanche.webp",
+        "shiny": null
+      }
+    }
+  ],
+  "718": [
+    {
+      "nom": "Cœur de Zygarde",
+      "sprites": {
+        "regular": "/images/formes/Zygarde-Cœur.webp",
+        "shiny": null
+      }
+    },
+    {
+      "nom": "Forme 20% (Chien)",
+      "sprites": {
+        "regular": "/images/formes/zygarde-20.webp",
+        "shiny": "/images/formes/zygarde-20-shiny.webp"
+      }
+    },
+    {
+      "nom": "Forme 100% (Parfaite)",
+      "sprites": {
+        "regular": "/images/formes/Zygarde-Forme-Parfaite.webp",
+        "shiny": "/images/formes/Zygarde-Forme-Parfaite-shiny.webp"
+      }
+    }
+  ]
+}
+

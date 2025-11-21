@@ -1,0 +1,116 @@
+{
+  "regions": [
+    {
+      "id": "national",
+      "nom": "National",
+      "icon": "🌍",
+      "description": "Tous les Pokémon",
+      "ranges": null
+    },
+    {
+      "id": "kanto",
+      "nom": "Kanto",
+      "icon": "🔴",
+      "description": "Pokémon Rouge/Bleu/Jaune",
+      "generation": 1,
+      "ranges": [[1, 151]]
+    },
+    {
+      "id": "johto",
+      "nom": "Johto",
+      "icon": "🟡",
+      "description": "Pokémon Or/Argent/Cristal",
+      "generation": 2,
+      "ranges": [[1, 251]]
+    },
+    {
+      "id": "hoenn",
+      "nom": "Hoenn",
+      "icon": "🔵",
+      "description": "Pokémon Rubis/Saphir/Émeraude",
+      "generation": 3,
+      "ranges": [[1, 386]]
+    },
+    {
+      "id": "sinnoh",
+      "nom": "Sinnoh",
+      "icon": "💎",
+      "description": "Pokémon Diamant/Perle/Platine",
+      "generation": 4,
+      "ranges": [[1, 493]]
+    },
+    {
+      "id": "unys",
+      "nom": "Unys",
+      "icon": "⚫",
+      "description": "Pokémon Noir/Blanc",
+      "generation": 5,
+      "ranges": [[1, 649]]
+    },
+    {
+      "id": "kalos",
+      "nom": "Kalos",
+      "icon": "✨",
+      "description": "Pokémon X/Y",
+      "generation": 6,
+      "ranges": [[1, 721]]
+    },
+    {
+      "id": "alola",
+      "nom": "Alola",
+      "icon": "🌺",
+      "description": "Pokémon Soleil/Lune",
+      "generation": 7,
+      "ranges": [[1, 802]]
+    },
+    {
+      "id": "alola-ultra",
+      "nom": "Alola (Ultra)",
+      "icon": "🌴",
+      "description": "Pokémon Ultra-Soleil/Ultra-Lune",
+      "generation": 7,
+      "ranges": [[1, 807]]
+    },
+    {
+      "id": "lets-go",
+      "nom": "Kanto (Let's Go)",
+      "icon": "⚡",
+      "description": "Pokémon Let's Go Pikachu/Évoli",
+      "generation": 7,
+      "ranges": [[1, 151], [808, 809]]
+    },
+    {
+      "id": "galar",
+      "nom": "Galar",
+      "icon": "⚔️",
+      "description": "Pokémon Épée/Bouclier",
+      "generation": 8,
+      "ranges": [[1, 905]]
+    },
+    {
+      "id": "hisui",
+      "nom": "Hisui",
+      "icon": "🏔️",
+      "description": "Pokémon Legends: Arceus",
+      "generation": 8,
+      "ranges": [[1, 905]]
+    },
+    {
+      "id": "paldea",
+      "nom": "Paldea",
+      "icon": "🍊",
+      "description": "Pokémon Écarlate/Violet",
+      "generation": 9,
+      "ranges": [[1, 1025]]
+    },
+    {
+      "id": "illumis-za",
+      "nom": "Illumis",
+      "icon": "🗼",
+      "description": "Pokémon Legends: Z-A",
+      "generation": 9,
+      "ranges": [[1, 1025]]
+    }
+  ]
+}
+
