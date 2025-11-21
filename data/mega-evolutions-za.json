@@ -360,8 +360,8 @@
     {
       "orbe": "Amphinolite",
       "sprites": {
-        "regular": "/images/megas/amphinobi-mega.webp",
-        "shiny": "/images/megas/amphinobi-mega-shiny.webp"
+        "regular": "/images/megas/mega-amphinobie.webp",
+        "shiny": null
       },
       "type": [
         {"name": "Eau", "image": "https://raw.githubusercontent.com/Yarkis01/TyraDex/images/types/eau.png" },

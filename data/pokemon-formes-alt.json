@@ -80,6 +80,71 @@
       }
     }
   ],
+  "676":[
+  {
+    "nom": "Coupe Cœur",
+    "sprites": {
+      "regular": "/images/formes/couafarel-coeur.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Étoile",
+    "sprites": {
+      "regular": "/images/formes/couafarel-etoile.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Diamant",
+    "sprites": {
+      "regular": "/images/formes/couafarel-diamant.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Demoiselle",
+    "sprites": {
+      "regular": "/images/formes/couafarel-demoiselle.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Madame",
+    "sprites": {
+      "regular": "/images/formes/couafarel-madame.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Monsieur",
+    "sprites": {
+      "regular": "/images/formes/couafarel-monsieur.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Reine",
+    "sprites": {
+      "regular": "/images/formes/couafarel-reine.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Kabuki",
+    "sprites": {
+      "regular": "/images/formes/couafarel-kabuki.webp",
+      "shiny": null
+    }
+  },
+  {
+    "nom": "Coupe Pharaon",
+    "sprites": {
+      "regular": "/images/formes/couafarel-pharaon.webp",
+      "shiny": null
+    }
+  }
+  ],
   "718": [
     {
       "nom": "Cœur de Zygarde",

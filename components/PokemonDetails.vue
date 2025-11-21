@@ -27,10 +27,16 @@ const getRegionalId = (nationalId, pokedexId) => {
   return regionalId !== null && regionalId !== undefined ? regionalId : nationalId;
 };
 
+// Composable pour récupérer les IDs depuis Pokepedia
+const { getRegionalIds: fetchPokepediaIds } = usePokepediaRegionalIds();
+
+// État pour les IDs régionaux (dynamiques depuis Pokepedia)
+const dynamicRegionalIds = ref({});
+
 // Obtenir tous les numéros régionaux d'un Pokémon
 const getAllRegionalIds = (nationalId) => {
-  const pokemonData = pokedexRegionalIds[nationalId];
-  if (!pokemonData) return [];
+  // Combiner les données locales et dynamiques
+  const pokemonData = dynamicRegionalIds.value[nationalId] || pokedexRegionalIds[nationalId] || {};
   
   const regionalIds = [];
   
@@ -122,6 +128,20 @@ const loadPokemonDetails = async () => {
     }
 
     pokemon.value = data;
+
+    // Récupérer les IDs régionaux depuis Pokepedia en arrière-plan
+    if (data.name?.fr) {
+      fetchPokepediaIds(props.pokemonId, data.name.fr).then((ids) => {
+        if (ids && Object.keys(ids).length > 0) {
+          dynamicRegionalIds.value[props.pokemonId] = {
+            national: props.pokemonId,
+            ...ids
+          };
+        }
+      }).catch((err) => {
+        console.warn('Impossible de récupérer les IDs régionaux depuis Pokepedia:', err);
+      });
+    }
 
     // Initialiser les formes disponibles (Base + Régionales)
     initForms(data);

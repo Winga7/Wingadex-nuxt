@@ -3,6 +3,7 @@
 import PokemonDetails from "./PokemonDetails.vue";
 import pokedexRegionauxData from "../data/pokedex-regionaux.json";
 import pokedexRegionalIds from "../data/pokedex-regional-ids.json";
+import legendaryPokemon from "../data/legendary-pokemon.json";
 
 // État de l'application
 const pokemons = ref([]);
@@ -16,6 +17,8 @@ const searchQuery = ref("");
 const selectedTypes = ref([]);
 const selectedGenerations = ref([]);
 const selectedPokedex = ref("national"); // Pokédex sélectionné (par défaut: national)
+const showLegendaryOnly = ref(false); // Filtre pour n'afficher que les légendaires
+const showUltraBeastsOnly = ref(false); // Filtre pour n'afficher que les Ultra-Chimères
 const showTypeFilters = ref(true);
 const showGenerationFilters = ref(true);
 const showPokedexFilters = ref(true);
@@ -148,6 +151,24 @@ const filteredPokemons = computed(() => {
     );
   }
 
+  // Filtre pour les légendaires uniquement
+  if (showLegendaryOnly.value) {
+    filtered = filtered.filter((pokemon) => {
+      // Vérifier si le Pokémon est dans la liste des légendaires ou fabuleux
+      const id = pokemon.pokedex_id;
+      return legendaryPokemon.legendary.includes(id) || legendaryPokemon.mythical.includes(id);
+    });
+  }
+
+  // Filtre pour les Ultra-Chimères uniquement
+  if (showUltraBeastsOnly.value) {
+    filtered = filtered.filter((pokemon) => {
+      // Vérifier si le Pokémon est une Ultra-Chimère
+      const id = pokemon.pokedex_id;
+      return legendaryPokemon.ultrabeasts.includes(id);
+    });
+  }
+
   return filtered;
 });
 
@@ -186,6 +207,8 @@ const resetFilters = () => {
   selectedTypes.value = [];
   selectedGenerations.value = [];
   selectedPokedex.value = "national";
+  showLegendaryOnly.value = false;
+  showUltraBeastsOnly.value = false;
 };
 
 // Ouvrir le modal avec un Pokémon
@@ -267,12 +290,12 @@ onUnmounted(() => {
         <h2 class="text-2xl font-bold mb-1">⭐ Liste des Pokémon</h2>
       </div>
 
-      <!-- Section filtres sticky (compteur + recherche + filtres) -->
+      <!-- Section recherche sticky (compact) -->
       <div
-        class="sticky top-0 z-40 bg-gray-900 pb-4 pt-2 -mx-4 px-4 shadow-lg mb-6"
+        class="sticky top-0 z-40 bg-gray-900 pb-3 pt-2 -mx-4 px-4 shadow-lg mb-4"
       >
         <!-- Compteur et bouton reset -->
-        <div class="mb-4 flex items-center justify-between flex-wrap gap-3">
+        <div class="mb-3 flex items-center justify-between flex-wrap gap-3">
           <p class="text-gray-400 text-sm">
             <span class="text-blue-400 font-semibold text-lg">{{
               filteredPokemons.length
@@ -291,7 +314,9 @@ onUnmounted(() => {
               searchQuery ||
               selectedTypes.length > 0 ||
               selectedGenerations.length > 0 ||
-              selectedPokedex !== 'national'
+              selectedPokedex !== 'national' ||
+              showLegendaryOnly ||
+              showUltraBeastsOnly
             "
             @click="resetFilters"
             class="px-3 py-1.5 bg-red-600 hover:bg-red-700 rounded-lg transition text-sm font-semibold"
@@ -300,6 +325,62 @@ onUnmounted(() => {
           </button>
         </div>
 
+        <!-- Barre de recherche et bouton légendaires -->
+        <div class="flex gap-2">
+          <!-- Barre de recherche -->
+          <div class="relative flex-1">
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="🔍 Rechercher par nom (FR, EN, JP) ou ID..."
+              class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-lg border-2 border-gray-700 focus:border-blue-500 focus:outline-none text-sm transition"
+            />
+            <button
+              v-if="searchQuery"
+              @click="searchQuery = ''"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-lg"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Bouton filtre légendaires -->
+          <button
+            @click="showLegendaryOnly = !showLegendaryOnly"
+            :class="
+              showLegendaryOnly
+                ? 'bg-gradient-to-r from-yellow-600 to-orange-600 ring-2 ring-yellow-400'
+                : 'bg-gray-700 hover:bg-gray-600'
+            "
+            class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg transition-all text-sm font-bold shadow-lg whitespace-nowrap"
+            :title="showLegendaryOnly ? 'Désactiver le filtre légendaires' : 'Afficher uniquement les légendaires'"
+          >
+            <span class="text-lg">✨</span>
+            <span class="hidden sm:inline">Légendaires</span>
+            <span v-if="showLegendaryOnly" class="text-yellow-200">✓</span>
+          </button>
+
+          <!-- Bouton filtre Ultra-Chimères -->
+          <button
+            @click="showUltraBeastsOnly = !showUltraBeastsOnly"
+            :class="
+              showUltraBeastsOnly
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 ring-2 ring-purple-400'
+                : 'bg-gray-700 hover:bg-gray-600'
+            "
+            class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg transition-all text-sm font-bold shadow-lg whitespace-nowrap"
+            :title="showUltraBeastsOnly ? 'Désactiver le filtre Ultra-Chimères' : 'Afficher uniquement les Ultra-Chimères'"
+          >
+            <span class="text-lg">🌀</span>
+            <span class="hidden md:inline">UC</span>
+            <span v-if="showUltraBeastsOnly" class="text-purple-200">✓</span>
+          </button>
+        </div>
+      </div>
+      <!-- Fin section sticky -->
+
+      <!-- Filtres détaillés (non sticky, défilent avec la page) -->
+      <div class="mb-6">
         <!-- Filtre par Pokédex régional -->
         <div class="mb-4 bg-gray-800 rounded-lg p-3">
           <button
@@ -344,25 +425,6 @@ onUnmounted(() => {
               </p>
             </div>
           </Transition>
-        </div>
-
-        <!-- Barre de recherche -->
-        <div class="mb-4">
-          <div class="relative">
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="🔍 Rechercher par nom (FR, EN, JP) ou ID..."
-              class="w-full bg-gray-800 text-white px-4 py-2.5 rounded-lg border-2 border-gray-700 focus:border-blue-500 focus:outline-none text-sm transition"
-            />
-            <button
-              v-if="searchQuery"
-              @click="searchQuery = ''"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-lg"
-            >
-              ✕
-            </button>
-          </div>
         </div>
 
         <!-- Filtres par type -->
@@ -414,7 +476,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Filtres par génération -->
-        <div class="mb-6 bg-gray-800 rounded-lg p-3">
+        <div class="mb-4 bg-gray-800 rounded-lg p-3">
           <button
             @click="showGenerationFilters = !showGenerationFilters"
             class="w-full flex items-center justify-between text-sm font-bold hover:text-blue-400 transition"
@@ -465,7 +527,7 @@ onUnmounted(() => {
           </Transition>
         </div>
       </div>
-      <!-- Fin section sticky -->
+      <!-- Fin filtres détaillés -->
 
       <!-- Message si aucun résultat -->
       <div
