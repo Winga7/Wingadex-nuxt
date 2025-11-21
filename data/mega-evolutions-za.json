@@ -1,0 +1,285 @@
+{
+  "15": [
+    {
+      "orbe": "Dardargnite",
+      "sprites": {
+        "regular": "/images/megas/dardargnan-mega.webp",
+        "shiny": "/images/megas/dardargnan-mega-shiny.webp"
+      },
+      "type": "Insecte, Poison"
+    }
+  ],
+  "26": [
+    {
+      "orbe": "Raichuïte X",
+      "sprites": {
+        "regular": "/images/megas/raichu-mega-x.webp",
+        "shiny": null
+      },
+      "type": "Electrik"
+    },
+    {
+      "orbe": "Raichuïte Y",
+      "sprites": {
+        "regular": "/images/megas/raichu-mega-y.webp",
+        "shiny": null
+      },
+      "type": "Electrik"
+    }
+  ],
+  "36": [
+    {
+      "orbe": "Mélodelfite",
+      "sprites": {
+        "regular": "/images/megas/melodelfe-mega.webp",
+        "shiny": null
+      },
+      "type": "Fée, Vol"
+    }
+  ],
+  "71": [
+    {
+      "orbe": "Empiflorite",
+      "sprites": {
+        "regular": "/images/megas/empiflor-mega.webp",
+        "shiny": null
+      },
+      "type": "Plante, Poison"
+    }
+  ],
+  "121": [
+    {
+      "orbe": "Starossite",
+      "sprites": {
+        "regular": "/images/megas/staross-mega.webp",
+        "shiny": null
+      },
+      "type": "Eau, Psy"
+    }
+  ],
+  "149": [
+    {
+      "orbe": "Dracolossite",
+      "sprites": {
+        "regular": "/images/megas/dracolosse-mega.webp",
+        "shiny": null
+      },
+      "type": "Dragon, Combat"
+    }
+  ],
+  "150": [
+    {
+      "orbe": "Mewtwoïte X",
+      "sprites": {
+        "regular": "/images/megas/mewtwo-mega-x.webp",
+        "shiny": "/images/megas/mewtwo-mega-x-shiny.webp"
+      },
+      "type": "Psy, Combat"
+    },
+    {
+      "orbe": "Mewtwoïte Y",
+      "sprites": {
+        "regular": "/images/megas/mewtwo-mega-y.webp",
+        "shiny": "/images/megas/mewtwo-mega-y-shiny.webp"
+      },
+      "type": "Psy"
+    }
+  ],
+  "154": [
+    {
+      "orbe": "Méganiumite",
+      "sprites": {
+        "regular": "/images/megas/meganium-mega.webp",
+        "shiny": null
+      },
+      "type": "Plante, Fée"
+    }
+  ],
+  "160": [
+    {
+      "orbe": "Aligatueurite",
+      "sprites": {
+        "regular": "/images/megas/aligatueur-mega.webp",
+        "shiny": null
+      },
+      "type": "Eau, Dragon"
+    }
+  ],
+  "208":[
+    {
+      "orbe": "Steelixite",
+      "sprites": {
+        "regular": "/images/megas/steelix-mega.webp",
+        "shiny": "/images/megas/steelix-mega-shiny.webp"
+      },
+      "type": "Acier, Sol"
+    }
+  ],
+  "227":[
+    {
+      "orbe": "Airmurite",
+      "sprites": {
+        "regular": "/images/megas/airmure-mega.webp",
+        "shiny": null
+      },
+      "type": "Acier, Vol"
+    }
+  ],
+  "358":[
+    {
+      "orbe": "Eokoite",
+      "sprites": {
+        "regular": "/images/megas/eoko-mega.webp",
+        "shiny": null
+      },
+      "type": "Acier, Psy"
+    }
+  ],
+  "380": [
+    {
+      "orbe": "Latiasite",
+      "sprites": {
+        "regular": "/images/megas/latias-mega.webp",
+        "shiny": "/images/megas/latias-mega-shiny.webp"
+      },
+      "type": "Dragon, Psy"
+    }
+  ],
+  "381": [
+    {
+      "orbe": "Latiosite",
+      "sprites": {
+        "regular": "/images/megas/latios-mega.webp",
+        "shiny": "/images/megas/latios-mega-shiny.webp"
+      },
+      "type": "Dragon, Psy"
+    }
+  ],
+  "384": [
+    {
+      "orbe": "Rayquazaïte",
+      "sprites": {
+        "regular": "/images/megas/rayquaza-mega.webp",
+        "shiny": "/images/megas/rayquaza-mega-shiny.webp"
+      },
+      "type": "Dragon, Vol"
+    }
+  ],
+  "445":[
+    {
+      "orbe": "Carchacrokite",
+      "sprites": {
+        "regular": "/images/megas/carchacrok-mega.webp",
+        "shiny": "/images/megas/carchacrok-mega-shiny.webp"
+      },
+      "type": "Dragon, Sol"
+    }
+  ],
+  "478": [
+    {
+      "orbe": "Momartikite",
+      "sprites": {
+        "regular": "/images/megas/momartik-mega.webp",
+        "shiny": null
+      },
+      "type": "Glace, Spectre"
+    }
+  ],
+  "500":[
+  {
+    "orbe": "Roitiflamite",
+    "sprites": {
+      "regular": "/images/megas/roitiflam-mega.webp",
+      "shiny": null
+    },
+    "type": "Feu, Combat"
+  }
+  ],
+  "530":[
+  {
+    "orbe": "Minotaupite",
+    "sprites": {
+      "regular": "/images/megas/minotaupe-mega.webp",
+      "shiny": null
+    },
+    "type": "Sol, Acier"
+  }
+  ],
+  "531":[
+  {
+    "orbe": "Nanméouïte",
+    "sprites": {
+      "regular": "/images/megas/nanmeoui-mega.webp",
+      "shiny": null
+    },
+    "type": "Normal, Fée"
+  }
+  ],
+  "652": [
+    {
+      "orbe": "Blindépiquite",
+      "sprites": {
+        "regular": "/images/megas/blindepique-mega.webp",
+        "shiny": null
+      },
+      "type": "Plante, Combat"
+    }
+  ],
+  "655": [
+    {
+      "orbe": "Goupelinite",
+      "sprites": {
+        "regular": "/images/megas/goupelin-mega.webp",
+        "shiny": null
+      }
+    }
+  ],
+  "658": [
+    {
+      "orbe": "Amphinobite Z",
+      "sprites": {
+        "regular": "/images/megas/amphinobi-mega.webp",
+        "shiny": "/images/megas/amphinobi-mega-shiny.webp"
+      }
+    }
+  ],
+  "718": [
+    {
+      "orbe": "Cœur de Zygarde",
+      "sprites": {
+        "regular": "/images/megas/Zygarde-Cœur.webp",
+        "shiny": null
+      }
+    },
+    {
+      "orbe": "Forme 20% (Chien)",
+      "sprites": {
+        "regular": "/images/megas/zygarde-20.webp",
+        "shiny": "/images/megas/zygarde-20-shiny.webp"
+      }
+    },
+    {
+      "orbe": "Forme 100% (Parfaite)",
+      "sprites": {
+        "regular": "/images/megas/Zygarde-Forme-Parfaite.webp",
+        "shiny": "/images/megas/Zygarde-Forme-Parfaite-shiny.webp"
+      }
+    },
+    {
+      "orbe": "Méga-Zygarde",
+      "sprites": {
+        "regular": "/images/megas/mega-zygarde.webp",
+        "shiny": null
+      }
+    }
+  ],
+  "719": [
+    {
+      "orbe": "Diancite",
+      "sprites": {
+        "regular": "/images/megas/diancie-mega.webp",
+        "shiny": "/images/megas/diancie-mega-shiny.webp"
+      }
+    }
+  ]
+}
