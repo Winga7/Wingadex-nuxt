@@ -1,5 +1,6 @@
 {
   "name": "Pokedex-Nuxt3",
+  "version": "0.1.0-alpha",
   "type": "module",
   "private": true,
   "scripts": {

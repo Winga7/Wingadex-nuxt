@@ -1,5 +1,11 @@
 <template>
   <div class="min-h-screen bg-gray-900 text-white">
+    <!-- Bannière en construction -->
+    <div class="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 text-black py-2 px-4 text-center font-semibold text-sm">
+      <span class="animate-pulse">🚧 Site en construction - De nouvelles fonctionnalités arrivent bientôt ! 🚧</span>
+      <span class="ml-3 bg-black/20 px-2 py-0.5 rounded text-xs font-mono">v0.1.0-alpha</span>
+    </div>
+
     <!-- En-tête -->
     <header class="bg-gray-800 shadow-lg">
       <div class="container mx-auto px-4 py-6">
