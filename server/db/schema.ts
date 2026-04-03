@@ -7,10 +7,16 @@ import { relations } from 'drizzle-orm'
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
   email: text('email').notNull().unique(),
+  /** Nom fourni par OAuth (Google / Discord), mis à jour à chaque connexion */
   name: text('name'),
   provider: text('provider'), // 'google', 'discord', etc.
   providerId: text('provider_id'),
+  /** Avatar fourni par OAuth */
   avatar: text('avatar'),
+  /** Pseudo affiché sur Wingadex ; si null, on utilise `name` OAuth */
+  displayName: text('display_name'),
+  /** URL d’image personnalisée ; si null, on utilise `avatar` OAuth */
+  avatarOverride: text('avatar_override'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull()
 })

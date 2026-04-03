@@ -1,11 +1,15 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const siteUrl = (process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000').replace(/\/$/, '')
+const defaultAuthBaseURL = `${siteUrl}/api/auth`
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   
   modules: [
     '@nuxtjs/tailwindcss',
-    // '@sidebase/nuxt-auth' // Désactivé : réinstaller avec `npx nuxt module add sidebase-auth` ou `npm i @sidebase/nuxt-auth` avant de décommenter
+    '@sidebase/nuxt-auth',
   ],
 
   runtimeConfig: {
@@ -19,18 +23,41 @@ export default defineNuxtConfig({
     
     // Public (exposed to client) — surchargé par NUXT_PUBLIC_SITE_URL (.env)
     public: {
-      siteUrl: 'http://localhost:3000'
+      siteUrl,
+      /** Indique si Google / Discord sont configurés (sans exposer les secrets). */
+      authGoogleEnabled: Boolean(
+        process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
+      ),
+      authDiscordEnabled: Boolean(
+        process.env.DISCORD_CLIENT_ID && process.env.DISCORD_CLIENT_SECRET,
+      ),
+      /** Démo credentials uniquement si aucun OAuth et build dev (aligné sur le handler). */
+      authDemoEnabled:
+        process.env.NODE_ENV === 'development' &&
+        !(
+          process.env.GOOGLE_CLIENT_ID &&
+          process.env.GOOGLE_CLIENT_SECRET
+        ) &&
+        !(
+          process.env.DISCORD_CLIENT_ID &&
+          process.env.DISCORD_CLIENT_SECRET
+        ),
     }
   },
 
-  // Configuration auth désactivée temporairement
-  // auth: {
-  //   origin: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-  //   enableGlobalAppMiddleware: false,
-  //   provider: {
-  //     type: 'authjs'
-  //   }
-  // },
+  auth: {
+    baseURL: process.env.NUXT_AUTH_ORIGIN || defaultAuthBaseURL,
+    provider: {
+      type: 'authjs',
+      trustHost: true,
+    },
+    globalAppMiddleware: {
+      isEnabled: false,
+    },
+    sessionRefresh: {
+      enableOnWindowFocus: true,
+    },
+  },
 
   app: {
     head: {

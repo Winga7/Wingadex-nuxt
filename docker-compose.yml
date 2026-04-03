@@ -1,0 +1,20 @@
+# PostgreSQL local pour Wingadex (Drizzle + profil utilisateur)
+# Démarrer : docker compose up -d
+# Arrêter  : docker compose down
+# URL .env : postgresql://wingadex:wingadex@localhost:5432/wingadex
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: wingadex-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: wingadex
+      POSTGRES_PASSWORD: wingadex
+      POSTGRES_DB: wingadex
+    volumes:
+      - wingadex_pgdata:/var/lib/postgresql/data
+
+volumes:
+  wingadex_pgdata:

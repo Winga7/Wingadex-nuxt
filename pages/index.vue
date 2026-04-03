@@ -23,15 +23,22 @@
             </div>
           </div>
 
-          <!-- Futur: Bouton de connexion -->
-          <div class="flex items-center gap-4">
-            <!-- Placeholder pour auth -->
-            <button
-              class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition text-sm font-semibold opacity-50 cursor-not-allowed"
-              disabled
+          <div class="flex items-center gap-3">
+            <template v-if="status === 'authenticated'">
+              <NuxtLink
+                to="/dashboard"
+                class="rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-500"
+              >
+                Mon dashboard
+              </NuxtLink>
+            </template>
+            <NuxtLink
+              v-else
+              to="/auth/signin"
+              class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-500"
             >
-              🔐 Connexion (bientôt)
-            </button>
+              Connexion
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -81,6 +88,8 @@
 </template>
 
 <script setup>
+const { status } = useAuth();
+
 const mainTab = ref('pokedex');
 
 // Configuration SEO
