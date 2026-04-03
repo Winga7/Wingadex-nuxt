@@ -29,11 +29,17 @@ cd Pokedex-Nuxt3
 npm install
 ```
 
-### 2. Configuration (optionnelle pour l'instant)
+### 2. Fichier d'environnement (après un clone)
 
-Le Pokédex fonctionne **sans configuration** pour consulter les Pokémon.
+Le dépôt ne contient pas de `.env` (il est ignoré par Git pour ne pas commiter de secrets). Un modèle est fourni :
 
-Pour activer les fonctionnalités d'authentification et de progression, voir [CONFIGURATION.md](./CONFIGURATION.md).
+```bash
+cp .env.example .env
+```
+
+Le Pokédex fonctionne **sans `.env`** pour consulter les Pokémon côté client. En revanche, **`DATABASE_URL` est nécessaire** dès que vous utilisez la base (Drizzle, scripts `db:*`, routes qui parlent à PostgreSQL).
+
+Pour l’auth et la progression, voir [CONFIGURATION.md](./CONFIGURATION.md).
 
 ### 3. Lancer en développement
 

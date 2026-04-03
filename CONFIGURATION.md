@@ -2,7 +2,9 @@
 
 ## 📋 Variables d'environnement
 
-Créez un fichier `.env` à la racine du projet avec les variables suivantes :
+Après un clone, copiez le modèle fourni : **`cp .env.example .env`** (puis éditez `.env`).
+
+Vous pouvez aussi créer un fichier `.env` à la racine avec les variables suivantes :
 
 ```env
 # Base de données PostgreSQL (o2switch)

@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   
   modules: [
     '@nuxtjs/tailwindcss',
-    // '@sidebase/nuxt-auth' // Désactivé temporairement - à réactiver lors de l'implémentation de l'auth
+    // '@sidebase/nuxt-auth' // Désactivé : réinstaller avec `npx nuxt module add sidebase-auth` ou `npm i @sidebase/nuxt-auth` avant de décommenter
   ],
 
   runtimeConfig: {
@@ -17,9 +17,9 @@ export default defineNuxtConfig({
     discordClientId: process.env.DISCORD_CLIENT_ID || '',
     discordClientSecret: process.env.DISCORD_CLIENT_SECRET || '',
     
-    // Public (exposed to client)
+    // Public (exposed to client) — surchargé par NUXT_PUBLIC_SITE_URL (.env)
     public: {
-      siteUrl: process.env.SITE_URL || 'http://localhost:3000'
+      siteUrl: 'http://localhost:3000'
     }
   },
 
