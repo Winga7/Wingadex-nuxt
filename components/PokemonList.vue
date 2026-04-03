@@ -4,10 +4,15 @@ import PokemonDetails from "./PokemonDetails.vue";
 import pokedexRegionauxData from "../data/pokedex-regionaux.json";
 import pokedexRegionalIds from "../data/pokedex-regional-ids.json";
 import legendaryPokemon from "../data/legendary-pokemon.json";
+import { tyraDexFetch, typeSlugFromImageUrl } from "~/utils/tyradex";
 
 // État de l'application
 const pokemons = ref([]);
+const workingList = ref([]);
 const isLoading = ref(true);
+const isFilterSyncing = ref(false);
+let syncRequestId = 0;
+let syncTimer = null;
 const showModal = ref(false);
 const selectedPokemonId = ref(null);
 const showScrollTop = ref(false);
@@ -23,11 +28,36 @@ const showTypeFilters = ref(true);
 const showGenerationFilters = ref(true);
 const showPokedexFilters = ref(true);
 
-// Liste des types disponibles (sera rempli dynamiquement)
 const availableTypes = ref([]);
-// Liste des générations disponibles
-const availableGenerations = ref([]);
-// Liste des Pokédex régionaux
+/** Méta officielle Tyradex GET /gen */
+const generationMeta = ref([]);
+const availableGenerations = computed(() => {
+  if (generationMeta.value.length > 0) {
+    return [...generationMeta.value]
+      .sort((a, b) => a.generation - b.generation)
+      .map((g) => ({
+        generation: g.generation,
+        from: g.from,
+        to: g.to,
+        count: g.to - g.from + 1,
+      }));
+  }
+  const generationsMap = new Map();
+  pokemons.value.forEach((pokemon) => {
+    const gen = pokemon.generation;
+    if (gen) {
+      generationsMap.set(gen, (generationsMap.get(gen) || 0) + 1);
+    }
+  });
+  return Array.from(generationsMap.entries())
+    .map(([generation, count]) => ({
+      generation,
+      count,
+      from: null,
+      to: null,
+    }))
+    .sort((a, b) => a.generation - b.generation);
+});
 const availablePokedex = ref(pokedexRegionauxData.regions);
 
 // Obtenir le numéro régional d'un Pokémon
@@ -41,22 +71,125 @@ const getRegionalId = (nationalId, pokedexId) => {
   return regionalId !== null && regionalId !== undefined ? regionalId : nationalId;
 };
 
+function slugForTypeName(typeNameFr) {
+  const t = availableTypes.value.find((x) => x.name === typeNameFr);
+  if (t?.image) {
+    const s = typeSlugFromImageUrl(t.image);
+    if (s) return s;
+  }
+  return String(typeNameFr || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+async function loadGenerationMeta() {
+  try {
+    const meta = await tyraDexFetch("/gen");
+    generationMeta.value = Array.isArray(meta) ? meta : [];
+  } catch (e) {
+    console.warn("Tyradex /gen indisponible — plages de génération non affichées", e);
+    generationMeta.value = [];
+  }
+}
+
+async function syncWorkingList() {
+  if (!pokemons.value.length) {
+    workingList.value = [];
+    return;
+  }
+  const myId = ++syncRequestId;
+  isFilterSyncing.value = true;
+  try {
+    let base = pokemons.value;
+
+    if (selectedGenerations.value.length > 0) {
+      const arrs = await Promise.all(
+        selectedGenerations.value.map((g) => tyraDexFetch(`/gen/${g}`))
+      );
+      const map = new Map();
+      for (const arr of arrs) {
+        if (!Array.isArray(arr)) continue;
+        for (const p of arr) {
+          map.set(p.pokedex_id, p);
+        }
+      }
+      base = Array.from(map.values());
+    }
+
+    const st = [...selectedTypes.value];
+    if (st.length === 1) {
+      try {
+        const slug = slugForTypeName(st[0]);
+        const data = await tyraDexFetch(`/types/${slug}`);
+        const ids = new Set((data.pokemons || []).map((p) => p.pokedex_id));
+        base = base.filter((p) => ids.has(p.pokedex_id));
+      } catch (e) {
+        console.warn("Filtre type Tyradex, fallback local", e);
+        base = base.filter((p) =>
+          p.types?.some((t) => t.name === st[0])
+        );
+      }
+    } else if (st.length === 2) {
+      try {
+        const s1 = slugForTypeName(st[0]);
+        const s2 = slugForTypeName(st[1]);
+        let data;
+        try {
+          data = await tyraDexFetch(`/types/${s1}/${s2}`);
+        } catch {
+          data = await tyraDexFetch(`/types/${s2}/${s1}`);
+        }
+        const ids = new Set((data.pokemons || []).map((p) => p.pokedex_id));
+        base = base.filter((p) => ids.has(p.pokedex_id));
+      } catch (e) {
+        console.warn("Filtre double type Tyradex, fallback local", e);
+        base = base.filter((p) => {
+          const names = (p.types || []).map((t) => t.name);
+          return (
+            names.length === 2 &&
+            st.every((n) => names.includes(n))
+          );
+        });
+      }
+    }
+
+    if (myId !== syncRequestId) return;
+    workingList.value = base;
+  } catch (e) {
+    console.error("syncWorkingList", e);
+    if (myId !== syncRequestId) return;
+    workingList.value = pokemons.value;
+  } finally {
+    if (myId === syncRequestId) isFilterSyncing.value = false;
+  }
+}
+
+function scheduleSync() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(() => syncWorkingList(), 200);
+}
+
+watch(
+  () => [...selectedGenerations.value],
+  () => scheduleSync(),
+  { deep: true }
+);
+
+watch(
+  () => [...selectedTypes.value],
+  () => scheduleSync(),
+  { deep: true }
+);
+
 // Charger tous les Pokémon au démarrage
 const loadPokemons = async () => {
   try {
     isLoading.value = true;
-    console.log("🔄 Chargement de la liste des Pokémon...");
-
-    const response = await fetch("https://tyradex.app/api/v1/pokemon");
-
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await tyraDexFetch("/pokemon");
     pokemons.value = data;
+    workingList.value = data;
 
-    // Extraire les types uniques avec leurs images et compter
     const typesMap = new Map();
     data.forEach((pokemon) => {
       pokemon.types?.forEach((type) => {
@@ -74,21 +207,8 @@ const loadPokemons = async () => {
       a.name.localeCompare(b.name)
     );
 
-    // Extraire les générations uniques avec compteur
-    const generationsMap = new Map();
-    data.forEach((pokemon) => {
-      const gen = pokemon.generation;
-      if (gen) {
-        generationsMap.set(gen, (generationsMap.get(gen) || 0) + 1);
-      }
-    });
-    availableGenerations.value = Array.from(generationsMap.entries())
-      .map(([gen, count]) => ({ generation: gen, count }))
-      .sort((a, b) => a.generation - b.generation);
-
-    console.log("✅ Pokémon chargés:", data.length);
-    console.log("✅ Types:", availableTypes.value.length);
-    console.log("✅ Générations:", availableGenerations.value.length);
+    await loadGenerationMeta();
+    await syncWorkingList();
   } catch (error) {
     console.error("❌ Erreur lors du chargement:", error);
     alert("Impossible de charger les Pokémon. Vérifiez votre connexion.");
@@ -97,9 +217,9 @@ const loadPokemons = async () => {
   }
 };
 
-// Filtrer les Pokémon selon les critères
+// Filtrer les Pokémon selon les critères (base = workingList : national + /gen + /types Tyradex)
 const filteredPokemons = computed(() => {
-  let filtered = pokemons.value;
+  let filtered = workingList.value;
 
   // Filtre par Pokédex régional
   if (selectedPokedex.value !== "national") {
@@ -135,19 +255,12 @@ const filteredPokemons = computed(() => {
     });
   }
 
-  // Filtre par types (combinable - OR)
-  if (selectedTypes.value.length > 0) {
-    filtered = filtered.filter((pokemon) => {
-      return pokemon.types?.some((type) =>
-        selectedTypes.value.includes(type.name)
-      );
-    });
-  }
-
-  // Filtre par générations (combinable - OR)
-  if (selectedGenerations.value.length > 0) {
+  // 1 ou 2 types : filtrage déjà fait côté Tyradex dans workingList ; 3+ : OU local
+  if (selectedTypes.value.length > 2) {
     filtered = filtered.filter((pokemon) =>
-      selectedGenerations.value.includes(pokemon.generation)
+      pokemon.types?.some((type) =>
+        selectedTypes.value.includes(type.name)
+      )
     );
   }
 
@@ -195,7 +308,6 @@ const toggleGeneration = (gen) => {
 // Sélectionner un Pokédex régional
 const selectPokedex = (pokedexId) => {
   selectedPokedex.value = pokedexId;
-  // Réinitialiser les autres filtres si on change de Pokédex
   if (pokedexId !== "national") {
     selectedGenerations.value = [];
   }
@@ -267,6 +379,7 @@ onMounted(() => {
 // Nettoyer au démontage (onUnmounted auto-importé par Nuxt)
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  clearTimeout(syncTimer);
 });
 </script>
 
@@ -296,7 +409,12 @@ onUnmounted(() => {
       >
         <!-- Compteur et bouton reset -->
         <div class="mb-3 flex items-center justify-between flex-wrap gap-3">
-          <p class="text-gray-400 text-sm">
+          <p class="text-gray-400 text-sm flex items-center gap-2 flex-wrap">
+            <span
+              v-if="isFilterSyncing"
+              class="inline-block h-4 w-4 border-2 border-violet-400 border-t-transparent rounded-full animate-spin shrink-0"
+              title="Mise à jour des filtres Tyradex…"
+            />
             <span class="text-blue-400 font-semibold text-lg">{{
               filteredPokemons.length
             }}</span>
@@ -471,6 +589,28 @@ onUnmounted(() => {
                   >
                 </button>
               </div>
+              <p
+                v-if="selectedTypes.length === 2"
+                class="text-xs text-violet-300 mt-2"
+              >
+                Combinaison <strong>double type</strong> exacte (endpoint Tyradex
+                <code class="text-[10px] bg-gray-900 px-1 rounded">/types/a/b</code>).
+              </p>
+              <p
+                v-else-if="selectedTypes.length === 1"
+                class="text-xs text-violet-300/90 mt-2"
+              >
+                Filtre via l’API Tyradex
+                <code class="text-[10px] bg-gray-900 px-1 rounded">/types/&lt;type&gt;</code>
+                (tous les Pokémon de ce type).
+              </p>
+              <p
+                v-else-if="selectedTypes.length > 2"
+                class="text-xs text-amber-200/90 mt-2"
+              >
+                Plus de 2 types : filtre <strong>OU</strong> en local sur la liste
+                courante.
+              </p>
             </div>
           </Transition>
         </div>
@@ -492,6 +632,12 @@ onUnmounted(() => {
 
           <Transition name="slide">
             <div v-show="showGenerationFilters" class="mt-3">
+              <p class="text-xs text-gray-400 mb-2 italic">
+                Plages et listes officielles Tyradex
+                <code class="text-[10px] bg-gray-900 px-1 rounded not-italic">GET /gen</code>
+                ·
+                <code class="text-[10px] bg-gray-900 px-1 rounded not-italic">GET /gen/&lt;n&gt;</code>
+              </p>
               <div
                 class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-9 gap-2"
               >
@@ -511,8 +657,14 @@ onUnmounted(() => {
                     <div class="text-base font-bold mb-0.5">
                       Gen {{ gen.generation }}
                     </div>
+                    <div
+                      v-if="gen.from != null && gen.to != null"
+                      class="text-[9px] opacity-80 leading-tight"
+                    >
+                      N°{{ gen.from }}–{{ gen.to }}
+                    </div>
                     <div class="text-[10px] opacity-90">
-                      {{ gen.count }}
+                      {{ gen.count }} Poké
                     </div>
                   </div>
                   <div

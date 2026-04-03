@@ -4,6 +4,7 @@ import megaEvolutionsZA from "../data/mega-evolutions-za.json";
 import pokemonFormesAlt from "../data/pokemon-formes-alt.json";
 import pokedexRegionalIds from "../data/pokedex-regional-ids.json";
 import pokedexRegionauxData from "../data/pokedex-regionaux.json";
+import { tyraDexFetch } from "~/utils/tyradex";
 
 const props = defineProps({
   pokemonId: {
@@ -81,15 +82,7 @@ const loadPokemonDetails = async () => {
 
     console.log("🔄 Chargement du Pokémon ID:", props.pokemonId);
 
-    const response = await fetch(
-      `https://tyradex.app/api/v1/pokemon/${props.pokemonId}`
-    );
-
-    if (!response.ok) {
-      throw new Error(`Erreur HTTP: ${response.status}`);
-    }
-
-    const data = await response.json();
+    const data = await tyraDexFetch(`/pokemon/${props.pokemonId}`);
 
     // Injecter les formes alternatives
     if (pokemonFormesAlt[props.pokemonId]) {
@@ -217,15 +210,10 @@ const changeForm = async (form) => {
   // Charger depuis Tyradex
   try {
     form.loading = true;
-    const regionUrl = `https://tyradex.app/api/v1/pokemon/${
-      props.pokemonId
-    }/${form.region.toLowerCase()}`;
-    console.log(`🔄 Chargement forme ${form.label}:`, regionUrl);
+    const regionPath = `/pokemon/${props.pokemonId}/${form.region.toLowerCase()}`;
+    console.log(`🔄 Chargement forme ${form.label}:`, regionPath);
 
-    const response = await fetch(regionUrl);
-    if (!response.ok) throw new Error("Forme introuvable");
-
-    const regionData = await response.json();
+    const regionData = await tyraDexFetch(regionPath);
 
     // Garder les évolutions de base
     if (!regionData.evolution) {

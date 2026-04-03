@@ -3,7 +3,7 @@
     <!-- Bannière en construction -->
     <div class="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 text-black py-2 px-4 text-center font-semibold text-sm">
       <span class="animate-pulse">🚧 Site en construction - De nouvelles fonctionnalités arrivent bientôt ! 🚧</span>
-      <span class="ml-3 bg-black/20 px-2 py-0.5 rounded text-xs font-mono">v0.1.0-alpha</span>
+      <span class="ml-3 bg-black/20 px-2 py-0.5 rounded text-xs font-mono">v0.2.0</span>
     </div>
 
     <!-- En-tête -->
@@ -39,7 +39,37 @@
 
     <!-- Contenu principal -->
     <main class="container mx-auto px-4 py-8">
-      <PokemonList />
+      <div class="flex flex-wrap gap-2 mb-6 border-b border-gray-700 pb-4">
+        <button
+          type="button"
+          @click="mainTab = 'pokedex'"
+          :class="[
+            'px-4 py-2 rounded-lg font-semibold text-sm transition',
+            mainTab === 'pokedex'
+              ? 'bg-blue-600 text-white ring-2 ring-blue-400'
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700',
+          ]"
+        >
+          Pokédex
+        </button>
+        <button
+          type="button"
+          @click="mainTab = 'types'"
+          :class="[
+            'px-4 py-2 rounded-lg font-semibold text-sm transition',
+            mainTab === 'types'
+              ? 'bg-violet-600 text-white ring-2 ring-violet-400'
+              : 'bg-gray-800 text-gray-300 hover:bg-gray-700',
+          ]"
+        >
+          Types &amp; faiblesses
+        </button>
+      </div>
+
+      <PokemonList v-show="mainTab === 'pokedex'" />
+      <KeepAlive>
+        <TypeDexTab v-if="mainTab === 'types'" />
+      </KeepAlive>
     </main>
 
     <!-- Footer -->
@@ -51,8 +81,7 @@
 </template>
 
 <script setup>
-// Auto-import du composant PokemonList grâce à Nuxt
-// Pas besoin d'importer explicitement
+const mainTab = ref('pokedex');
 
 // Configuration SEO
 useHead({
